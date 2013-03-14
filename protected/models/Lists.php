@@ -5,8 +5,8 @@
  *
  * The followings are the available columns in table 'lists':
  * @property integer $lid
- * @property integer $smart
  * @property string $name
+ * @property string $count
  */
 class Lists extends CActiveRecord
 {
@@ -36,12 +36,13 @@ class Lists extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('smart', 'required'),
-			array('smart', 'numerical', 'integerOnly'=>true),
+			array('lid, count', 'required'),
+			array('lid', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>50),
+			array('count', 'length', 'max'=>8),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('lid, smart, name', 'safe', 'on'=>'search'),
+			array('lid, name, count', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -62,9 +63,9 @@ class Lists extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'lid' => 'Lid',
-			'smart' => 'Smart',
-			'name' => 'Name',
+			'lid' => 'ID пользователя',
+			'name' => 'Имя',
+			'count' => 'Количество',
 		);
 	}
 
@@ -80,8 +81,8 @@ class Lists extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('lid',$this->lid);
-		$criteria->compare('smart',$this->smart);
 		$criteria->compare('name',$this->name,true);
+		$criteria->compare('count',$this->count,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

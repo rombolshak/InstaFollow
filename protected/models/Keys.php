@@ -62,7 +62,7 @@ class Keys extends CActiveRecord
 	{
 		return array(
 			'kid' => 'Kid',
-			'clientId' => 'Client',
+			'clientId' => 'Client ID',
 			'clientSecret' => 'Client Secret',
 		);
 	}
