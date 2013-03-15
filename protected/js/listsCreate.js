@@ -16,11 +16,11 @@ function refreshName(){
 $(document).ready(function(){
 
     $("#Lists_lid").after('<a class="btn" id="unlockLid"><i class="icon-lock"></i> </a>');
-    $("#Lists_name").after('<a class="btn" id="refreshName"><i class="icon-refresh"></i> </a>');
+    $("#Lists_name").after('<a class="btn" id="refreshName"><i class="icon-refresh"></i> </a>')
+        .focusout(refreshName);
 
     $("#unlockLid, button[type=submit]").click(function(){
         $("#Lists_lid").removeAttr('disabled');
     });
     $("#refreshName").click(refreshName);
-    $("#Lists_name").focusout(refreshName);
 });

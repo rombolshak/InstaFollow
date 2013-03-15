@@ -7,6 +7,7 @@
  * @property integer $lid
  * @property string $name
  * @property string $count
+ * @property int $collected
  */
 class Lists extends CActiveRecord
 {
@@ -54,6 +55,8 @@ class Lists extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+            'collected'=>array(self::STAT, 'PeopleToFollow', 'lid',
+                'select'=>'max(`pos`)'),
 		);
 	}
 
@@ -66,6 +69,7 @@ class Lists extends CActiveRecord
 			'lid' => 'ID пользователя',
 			'name' => 'Имя',
 			'count' => 'Количество',
+            'collected'=>'Просканировано',
 		);
 	}
 
@@ -83,6 +87,7 @@ class Lists extends CActiveRecord
 		$criteria->compare('lid',$this->lid);
 		$criteria->compare('name',$this->name,true);
 		$criteria->compare('count',$this->count,true);
+        //$criteria->compare('collected',$this->collected,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
