@@ -37,7 +37,7 @@ class Lists extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('lid, count', 'required'),
-			array('lid', 'numerical', 'integerOnly'=>true),
+			array('lid, count', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>50),
 			array('count', 'length', 'max'=>8),
 			// The following rule is used by search().

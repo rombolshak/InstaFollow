@@ -21,7 +21,7 @@ Yii::app()->clientScript->registerScriptFile(
 )); ?>
 
     <fieldset>
-        <?php echo $form->textFieldRow($model,'lid', array('hint'=>'Значение в этом поле должно появиться автоматически, если будет найден пользователь с именем, указанным в следующем поле')); ?>
+        <?php echo $form->textFieldRow($model,'lid', array('disabled'=>true,'hint'=>'Значение в этом поле должно появиться автоматически, если будет найден пользователь с именем, указанным в следующем поле')); ?>
         <?php echo $form->textFieldRow($model,'name',array('maxlength'=>50, 'hint'=>'Пользователь, с которого в базу будет собираться, кого фолловить')); ?>
         <?php echo $form->textFieldRow($model,'count',array('maxlength'=>8, 'hint'=>'Сколько фолловеров необходимо добавить с базу в этого пользователя')); ?>
     </fieldset>
