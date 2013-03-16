@@ -3,12 +3,12 @@ function refreshName(){
         function (data){
             if (data.error) {
                 $("#Lists_lid").val("No such user");
-                $("#Lists_lid, #Lists_name").removeClass("success").addClass("error");
+                $("#Lists_lid, #Lists_name").parent().parent().removeClass("success").addClass("error")
             }
             else {
                 $("#Lists_lid").val(data.id);
                 $("#Lists_name").val(data.username);
-                $("#Lists_lid, #Lists_name").removeClass("error").addClass("success")
+                $("#Lists_lid, #Lists_name").parent().parent().removeClass("error").addClass("success")
             }
         });
 }

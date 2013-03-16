@@ -2,9 +2,15 @@
 /* @var $this ListsController */
 /* @var $model Lists */
 
+Yii::app()->clientScript->registerCoreScript('jquery');
+Yii::app()->clientScript->registerScriptFile(
+    Yii::app()->assetManager->publish(
+        Yii::app()->basePath . '/js/lists'). '/grid.js',
+    CClientScript::POS_END);
+
 $this->breadcrumbs=array(
-	'Lists'=>array('index'),
-	'Manage',
+	'Списки'=>array('index'),
+	'Главная',
 );
 
 $this->menu=array(
@@ -16,19 +22,4 @@ $this->menu=array(
 
 <h1>Списки</h1>
 
-
-<?php $this->widget('bootstrap.widgets.TbGridView', array(
-	'id'=>'lists-grid',
-	'dataProvider'=>$model->search(),
-	'filter'=>$model,
-	'columns'=>array(
-		//'lid',
-		'name',
-		'count',
-        'collected',
-		array(
-			'class'=>'bootstrap.widgets.TbButtonColumn',
-            'template'=>'{delete}'
-		),
-	),
-)); ?>
+<?php $this->renderPartial("_grid", array('model'=>$model)); ?>

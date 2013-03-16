@@ -7,6 +7,7 @@
  * @property integer $lid
  * @property string $name
  * @property string $count
+ * @property string cursor
  * @property int $collected
  */
 class Lists extends CActiveRecord
@@ -55,10 +56,22 @@ class Lists extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-            'collected'=>array(self::STAT, 'PeopleToFollow', 'lid',
-                'select'=>'max(`pos`)'),
+            'collected'=>array(self::STAT, 'PeopleToFollow', 'lid'),
 		);
 	}
+
+    /**
+     * @return array Not filled lists
+     */
+    public function getNotFilled()
+    {
+        $lists = Lists::model()->with('collected')->findAll();
+        $res = array();
+        foreach($lists as $list)
+            if ($list->collected < $list->count)
+                $res[] = $list;
+        return $res;
+    }
 
 	/**
 	 * @return array customized attribute labels (name=>label)

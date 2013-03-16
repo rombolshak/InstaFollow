@@ -6,7 +6,7 @@
 Yii::app()->clientScript->registerCoreScript('jquery');
 Yii::app()->clientScript->registerScriptFile(
     Yii::app()->assetManager->publish(
-        Yii::app()->basePath . '/js/'). '/listsCreate.js',
+        Yii::app()->basePath . '/js/lists/'). 'create.js',
     CClientScript::POS_END);
 
 $this->breadcrumbs=array(

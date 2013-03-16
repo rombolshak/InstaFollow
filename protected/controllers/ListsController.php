@@ -69,6 +69,7 @@ class ListsController extends Controller
 	public function actionDelete($id)
 	{
 		$this->loadModel($id)->delete();
+        PeopleToFollow::model()->deleteAllByAttributes(array('lid'=>$id));
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if(!isset($_GET['ajax']))
@@ -93,9 +94,10 @@ class ListsController extends Controller
 		if(isset($_GET['Lists']))
 			$model->attributes=$_GET['Lists'];
 
-		$this->render('admin',array(
-			'model'=>$model,
-		));
+        if (Yii::app()->request->isAjaxRequest)
+            $this->renderPartial('_grid', array('model'=>$model));
+		else
+            $this->render('admin',array('model'=>$model));
 	}
 
 	/**
