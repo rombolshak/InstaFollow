@@ -9,6 +9,10 @@
  * @property string $picture
  * @property int $followers
  * @property int $follows
+ *
+ * @property UserTokens tokens
+ * @property int tokensCount
+ * @property FollowManager manager
  */
 class Users extends CActiveRecord
 {
@@ -77,6 +81,19 @@ class Users extends CActiveRecord
 		);
 	}
 
+    public function getStatus()
+    {
+        if ($this->manager->paused == 1)
+            return '<span class="label label-inverse">Приостановлено</span>';
+        switch ($this->manager->status) {
+            case 'notStarted': return '<span class="label label-important">Не запущено</span>';
+            case 'follow': return '<span class="label label-info">Follow</span>';
+            case 'wait': return '<span class="label label-warning">Ждем</span><br />'.date('d.m.y H:i', $this->manager->time);
+            case 'unfollow': return '<span class="label label-default">Unfollow</span>';
+            case 'done': return '<span class="label label-success">Закончено</span>';
+        }
+    }
+
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
@@ -87,6 +104,7 @@ class Users extends CActiveRecord
 		// should not be searched.
 
 		$criteria=new CDbCriteria;
+        $criteria->with = 'manager';
 
 		$criteria->compare('uid',$this->uid,true);
 		$criteria->compare('name',$this->name,true);

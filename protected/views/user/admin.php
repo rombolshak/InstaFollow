@@ -40,6 +40,11 @@ $this->menu=array(
         ),
 		'followers',
         'follows',
+        array(
+            'header'=>'Статус',
+            'type'=>'raw',
+            'value'=>'$data->getStatus()',
+        ),
 		array(
 			'class'=>'bootstrap.widgets.TbButtonColumn',
             'template'=>'{delete}',

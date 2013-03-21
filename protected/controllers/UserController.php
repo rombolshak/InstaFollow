@@ -56,7 +56,7 @@ class UserController extends Controller
             list($accessToken, $instagramUser) = $this->getInstagramUser($key);
 
             $user = $this->createUser($instagramUser);
-            $token = $this->createToken($kid, $user, $instagramUser, $accessToken);
+            $token = $this->createToken($kid, $user, $accessToken);
 
             if ((int)UserTokens::model()->countByAttributes(array('uid'=>$token->uid)) < (int)Keys::model()->count()) {
                 $this->processNextKey($token);
@@ -114,15 +114,16 @@ class UserController extends Controller
      * @param $accessToken
      * @return CActiveRecord|UserTokens
      */
-    private function createToken($kid, $user, $instagramUser, $accessToken)
+    private function createToken($kid, $user, $accessToken)
     {
         $token = UserTokens::model()->findByAttributes(array('kid' => $kid, 'uid' => $user->uid));
         if ($token == null) {
             $token = new UserTokens();
-            $token->uid = $instagramUser->id;
+            $token->uid = $user->uid;
             $token->kid = $kid;
             $token->token = $accessToken;
-            $token->save();
+            if (!$token->save())
+                throw new CHttpException(500, $token->errors);
             return $token;
         }
         return $token;
