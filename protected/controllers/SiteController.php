@@ -23,13 +23,13 @@ class SiteController extends Controller
 
 	/**
 	 * This is the default 'index' action that is invoked
-	 * when an action is not explicitly requested by users.
+	 * when an action is not explicitly requested by user.
 	 */
 	public function actionIndex()
 	{
 		// renders the view file 'protected/views/site/index.php'
 		// using the default layout 'protected/views/layouts/main.php'
-		$this->redirect(Yii::app()->user->isGuest ? Yii::app()->createUrl("site/login") : Yii::app()->createUrl("users"));
+		$this->redirect(Yii::app()->user->isGuest ? Yii::app()->createUrl("site/login") : Yii::app()->createUrl("user"));
 	}
 
 	/**

@@ -1,21 +1,22 @@
 <?php
 
 /**
- * This is the model class for table "user".
+ * This is the model class for table "followManager".
  *
- * The followings are the available columns in table 'user':
- * @property int $uid
- * @property string $name
- * @property string $picture
- * @property int $followers
- * @property int $follows
+ * The followings are the available columns in table 'followManager':
+ * @property string $uid
+ * @property string $lid
+ * @property string $pos
+ * @property string $status
+ * @property integer $paused
+ * @property string $time
  */
-class Users extends CActiveRecord
+class FollowManager extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
-	 * @return Users the static model class
+	 * @return FollowManager the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -27,7 +28,7 @@ class Users extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'users';
+		return 'followManager';
 	}
 
 	/**
@@ -38,14 +39,14 @@ class Users extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, picture', 'required'),
-			array('uid', 'length', 'max'=>11),
-			array('name', 'length', 'max'=>50),
-			array('picture', 'length', 'max'=>100),
-			array('followers, follows', 'length', 'max'=>5),
+			array('uid', 'required'),
+			array('paused', 'numerical', 'integerOnly'=>true),
+			array('uid, lid, pos', 'length', 'max'=>11),
+			array('status', 'length', 'max'=>10),
+			array('time', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('uid, name, picture, followers, follows', 'safe', 'on'=>'search'),
+			array('uid, lid, pos, status, paused, time', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -57,9 +58,9 @@ class Users extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-            'tokens' => array(self::HAS_MANY, 'UserTokens', 'uid'),
-            'manager'=>array(self::HAS_ONE, 'FollowManager', 'uid'),
-            'tokensCount'=>array(self::STAT, 'UserTokens', 'uid'),
+            'user'=>array(self::HAS_ONE, "Users", "uid"),
+            'list'=>array(self::HAS_ONE, "Lists", "lid"),
+            'people'=>array(self::HAS_MANY, "PeopleToFollow", 'lid'),
 		);
 	}
 
@@ -69,11 +70,12 @@ class Users extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'uid' => 'ID',
-			'name' => 'Имя',
-			'picture' => '',
-			'followers' => 'Фолловеров',
-            'follows' => 'Фолловит',
+			'uid' => 'Uid',
+			'lid' => 'Спмсок',
+			'pos' => 'Pos',
+			'status' => 'Статус',
+			'paused' => 'Paused',
+			'time' => 'Time',
 		);
 	}
 
@@ -89,10 +91,11 @@ class Users extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('uid',$this->uid,true);
-		$criteria->compare('name',$this->name,true);
-		$criteria->compare('picture',$this->picture,true);
-		$criteria->compare('followers',$this->followers,true);
-        $criteria->compare('follows', $this->follows, true);
+		$criteria->compare('lid',$this->lid,true);
+		$criteria->compare('pos',$this->pos,true);
+		$criteria->compare('status',$this->status,true);
+		$criteria->compare('paused',$this->paused);
+		$criteria->compare('time',$this->time,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

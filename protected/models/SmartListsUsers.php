@@ -1,21 +1,18 @@
 <?php
 
 /**
- * This is the model class for table "user".
+ * This is the model class for table "smartListsUsers".
  *
- * The followings are the available columns in table 'user':
- * @property int $uid
- * @property string $name
- * @property string $picture
- * @property int $followers
- * @property int $follows
+ * The followings are the available columns in table 'smartListsUsers':
+ * @property string $slid
+ * @property string $uid
  */
-class Users extends CActiveRecord
+class SmartListsUsers extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
-	 * @return Users the static model class
+	 * @return SmartListsUsers the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -27,7 +24,7 @@ class Users extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'users';
+		return 'smartListsUsers';
 	}
 
 	/**
@@ -38,14 +35,11 @@ class Users extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, picture', 'required'),
-			array('uid', 'length', 'max'=>11),
-			array('name', 'length', 'max'=>50),
-			array('picture', 'length', 'max'=>100),
-			array('followers, follows', 'length', 'max'=>5),
+			array('slid, uid', 'required'),
+			array('slid, uid', 'length', 'max'=>11),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('uid, name, picture, followers, follows', 'safe', 'on'=>'search'),
+			array('slid, uid', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -57,9 +51,6 @@ class Users extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-            'tokens' => array(self::HAS_MANY, 'UserTokens', 'uid'),
-            'manager'=>array(self::HAS_ONE, 'FollowManager', 'uid'),
-            'tokensCount'=>array(self::STAT, 'UserTokens', 'uid'),
 		);
 	}
 
@@ -69,11 +60,8 @@ class Users extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'uid' => 'ID',
-			'name' => 'Имя',
-			'picture' => '',
-			'followers' => 'Фолловеров',
-            'follows' => 'Фолловит',
+			'slid' => 'Slid',
+			'uid' => 'Uid',
 		);
 	}
 
@@ -88,11 +76,8 @@ class Users extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
+		$criteria->compare('slid',$this->slid,true);
 		$criteria->compare('uid',$this->uid,true);
-		$criteria->compare('name',$this->name,true);
-		$criteria->compare('picture',$this->picture,true);
-		$criteria->compare('followers',$this->followers,true);
-        $criteria->compare('follows', $this->follows, true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

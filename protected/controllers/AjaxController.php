@@ -31,7 +31,7 @@ class AjaxController extends Controller
             array('allow',
                 'users'=>array('@'),
             ),
-            array('deny',  // deny all users
+            array('deny',  // deny all user
                 'users'=>array('*'),
             ),
         );

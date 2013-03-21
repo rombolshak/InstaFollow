@@ -50,7 +50,7 @@ return array(
         ),
 		// uncomment the following to enable URLs in path-format
 
-		'urlManager'=>array(
+		/*'urlManager'=>array(
 			'urlFormat'=>'path',
             'showScriptName'=>true,
 			'rules'=>array(
@@ -58,7 +58,7 @@ return array(
 				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 			),
-		),
+		),*/
 
         /*
 		'db'=>array(

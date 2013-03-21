@@ -32,7 +32,7 @@ class ListsController extends Controller
 			array('allow',
 				'users'=>array('@'),
 			),
-			array('deny',  // deny all users
+			array('deny',  // deny all user
 				'users'=>array('*'),
 			),
 		);
@@ -81,7 +81,7 @@ class ListsController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$this->redirect('admin');
+		$this->redirect($this->createUrl('lists/admin'));
     }
 
 	/**

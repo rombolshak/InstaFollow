@@ -33,7 +33,7 @@
                     'class'=>'bootstrap.widgets.TbMenu',
                     'items'=>array(
                         //array('label'=>'Home', 'url'=>array('/site/index')),
-                        array('label'=>'Пользователи', 'url'=>array('/users'), 'visible'=>!Yii::app()->user->isGuest),
+                        array('label'=>'Пользователи', 'url'=>array('/user'), 'visible'=>!Yii::app()->user->isGuest),
                         array('label'=>'Ключи', 'url'=>array('/keys'), 'visible'=>!Yii::app()->user->isGuest),
                         array('label'=>'Списки', 'url'=>array('/lists'), 'visible'=>!Yii::app()->user->isGuest),
                         //array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
