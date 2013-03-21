@@ -40,33 +40,37 @@ class FillListsCommand extends CConsoleCommand {
                     // если курсор == -1, то больше нечего брать, фолловеры закончились
                     $list->count = $collected;
                     $list->save();
-                    continue;
+                    break;
                 }
                 $data = $instagram->getUserFollowedBy($list->lid, $list->cursor);
 
                 if ($data['meta']['code'] == 200) {
                     $list->cursor = isset($data['pagination']['next_cursor']) ? $data['pagination']['next_cursor'] : "-1";
                     foreach($data['data'] as $user) {
-                        $man = new PeopleToFollow();
-                        $man->fid = (int) $user['id'];
-                        $man->lid = $list->lid;
-                        $man->pos = $collected++;
-                        $man->save();
+                        //$man = PeopleToFollow::model()->findByAttributes(array('lid'=>$list->lid, 'fid'=>(int)$user['id']));
+                        //if ($man == null) {
+                            $man = new PeopleToFollow();
+                            $man->fid = (int) $user['id'];
+                            $man->lid = $list->lid;
+                            $man->pos = $collected++;
+                            $man->save();
+                        //}
                     }
                     $list->save();
                     $runs--;
                 }
                 else {
                     if ($data['meta']['error_message'] == 'The "access_token" provided is invalid.') {
-                        echo "The \"access_token\" provided is invalid.\n";
+                        Yii::log("The \"access_token\" provided is invalid.\n
+                        Token deleted\n.
+                        You should autorize user @".$tokens[$i]->user->name." again on key #".$tokens[$i]->kid, 'warning');
                         $tokens[$i]->delete();
-                        echo "Token deleted\n. You should autorize user @".$tokens[$i]->user->name." again on key #".$tokens[$i]->kid."\n";
                         break;
                     }
                     else {
-                        echo "Error message from Instagram: \n".$data['meta']['error_message']."\n";
-                        echo "Occured on list ".$list->name." (".$list->lid.")\n";
-                        echo "With token ".$token." (Key #".$tokens[$i]->kid.", user @".$tokens[$i]->user->name.")\n\n";
+                        Yii::log("Error message from Instagram: \n".$data['meta']['error_message']."\n".
+                        "Occured on list ".$list->name." (".$list->lid.")\n".
+                        "With token ".$token." (Key #".$tokens[$i]->kid.", user @".$tokens[$i]->user->name.")", 'error');
                         break;
                     }
                 }

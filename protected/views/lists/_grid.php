@@ -10,7 +10,7 @@
         array(
             'header'=>"%",
             'type'=>'raw',
-            'value'=>'$data->collected / $data->count'
+            'value'=>'$data->collected / $data->count * 100'
         ),
         array(
             'class'=>'bootstrap.widgets.TbButtonColumn',
