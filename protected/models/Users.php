@@ -88,7 +88,8 @@ class Users extends CActiveRecord
         switch ($this->manager->status) {
             case 'notStarted': return '<span class="label label-important">Не запущено</span>';
             case 'follow': return '<span class="label label-info">Follow</span>';
-            case 'wait': return '<span class="label label-warning">Ждем</span><br />'.date('d.m.y H:i', $this->manager->time);
+            case 'wait': $time = strtotime($this->manager->time);
+                return '<span class="label label-warning">Ждем</span><br />'.date("d.m.y H:i", $time);
             case 'unfollow': return '<span class="label label-default">Unfollow</span>';
             case 'done': return '<span class="label label-success">Закончено</span>';
         }

@@ -50,4 +50,46 @@ class AjaxController extends Controller
             echo json_encode(array('error' => true));
         else echo json_encode($searchedUser['data'][0]);
     }
+
+    public function actionUserStart($uid, $lid = 0) {
+        if ($lid == 0) {echo 'Lid is null'; return;}
+        if (Lists::model()->findByPk($lid) == null) {echo 'No such list '.$lid; return;}
+        if (Users::model()->findByPk($uid) == null) {echo 'No such user '.$uid; return;}
+
+        /** @var FollowManager $manager  */
+        $manager = FollowManager::model()->findByPk($uid);
+        //CVarDumper::dump($manager, 10, true);
+        $manager->lid = $lid;
+        $manager->pos = 0;
+        $manager->status = 'follow';
+        $manager->save();
+    }
+
+    public function actionUserPause($uid) {
+        if (Users::model()->findByPk($uid) == null) {echo 'No such user '.$uid; return;}
+
+        /** @var FollowManager $manager  */
+        $manager = FollowManager::model()->findByPk($uid);
+        $manager->paused = 1;
+        $manager->save();
+    }
+
+    public function actionUserContinue($uid) {
+        if (Users::model()->findByPk($uid) == null) {echo 'No such user '.$uid; return;}
+
+        /** @var FollowManager $manager  */
+        $manager = FollowManager::model()->findByPk($uid);
+        $manager->paused = 0;
+        if (!$manager->save())
+            CVarDumper::dump($manager->errors);
+    }
+
+    public function actionUserStop($uid) {
+        if (Users::model()->findByPk($uid) == null) {echo 'No such user '.$uid; return;}
+
+        /** @var FollowManager $manager  */
+        $manager = FollowManager::model()->findByPk($uid);
+        $manager->status = 'done';
+        $manager->save();
+    }
 }

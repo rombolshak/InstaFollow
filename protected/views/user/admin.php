@@ -13,6 +13,13 @@ $this->menu=array(
     array('label'=>'Информация по ключам', 'url'=>array('keys')),
 );
 
+Yii::app()->clientScript->registerScript('grid-update', '$(document).ready(function(){
+    setInterval(function(){
+        $("#users-grid").yiiGridView("update");
+    }, 60000);
+
+ });', CClientScript::POS_END);
+
 ?>
 <h1>Пользователи</h1>
 
@@ -36,7 +43,7 @@ $this->menu=array(
         array(
             'header'=>'Список',
             'type'=>'raw',
-            'value'=>'$data->manager->list->name',
+            'value'=>'CHtml::dropDownList("list", $data->manager->lid, CHtml::listData(Lists::model()->findAll(), "lid", "name"), array("prompt"=>"Выберите", "disabled"=> ($data->manager->status != "notStarted") && ($data->manager->status != "done")))',
         ),
 		'followers',
         'follows',
@@ -47,7 +54,77 @@ $this->menu=array(
         ),
 		array(
 			'class'=>'bootstrap.widgets.TbButtonColumn',
-            'template'=>'{delete}',
+            'template'=>'{start}{pause}{continue}{stop}{delete}',
+            'buttons' => array(
+                'start'=>array(
+                    'label'=>"Запустить",
+                    'icon'=>'play',
+                    'visible'=>'$data->manager->status == \'notStarted\' || $data->manager->status == \'done\'',
+                    'url'=>'Yii::app()->createAbsoluteUrl("ajax/userStart", array("uid"=>$data->uid));',
+                    'click' => " function(){
+                        $.fn.yiiGridView.update('users-grid', {
+                                        type:'POST',
+                                        url:$(this).attr('href') + '&lid=' + $($('.start').parent().parent().children()[3]).children().val(),
+                                        success:function(data) {
+                                              $.fn.yiiGridView.update('users-grid');
+                                        }
+                                    });
+                                    return false;
+                    }
+                    ",
+                ),
+                'pause'=>array(
+                    'label'=>"Приостановить",
+                    'icon'=>'pause',
+                    'visible'=>'($data->manager->paused == 0) && ($data->manager->status != \'notStarted\') && ($data->manager->status != \'done\')',
+                    'url'=>'Yii::app()->createAbsoluteUrl("ajax/userPause", array("uid"=>$data->uid));',
+                    'click' => " function(){
+                        $.fn.yiiGridView.update('users-grid', {
+                                        type:'POST',
+                                        url:$(this).attr('href'),
+                                        success:function(data) {
+                                              $.fn.yiiGridView.update('users-grid');
+                                        }
+                                    });
+                                    return false;
+                    }
+                    ",
+                ),
+                'continue'=>array(
+                    'label'=>"Продолжить",
+                    'icon'=>'play',
+                    'visible'=>'$data->manager->paused == 1',
+                    'url'=>'Yii::app()->createAbsoluteUrl("ajax/userContinue", array("uid"=>$data->uid));',
+                    'click' => " function(){
+                        $.fn.yiiGridView.update('users-grid', {
+                                        type:'POST',
+                                        url:$(this).attr('href'),
+                                        success:function(data) {
+                                              $.fn.yiiGridView.update('users-grid');
+                                        }
+                                    });
+                                    return false;
+                    }
+                    ",
+                ),
+                'stop'=>array(
+                    'label'=>"Остановить",
+                    'icon'=>'stop',
+                    'visible'=>'($data->manager->status != \'notStarted\') && ($data->manager->status != \'done\')',
+                    'url'=>'Yii::app()->createAbsoluteUrl("ajax/userStop", array("uid"=>$data->uid));',
+                    'click' => " function(){
+                        $.fn.yiiGridView.update('users-grid', {
+                                        type:'POST',
+                                        url:$(this).attr('href'),
+                                        success:function(data) {
+                                              $.fn.yiiGridView.update('users-grid');
+                                        }
+                                    });
+                                    return false;
+                    }
+                    ",
+                ),
+            ),
 		),
 	),
 )); ?>
