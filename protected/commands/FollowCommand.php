@@ -18,12 +18,7 @@ class FollowCommand extends CConsoleCommand {
             }
 
             $tokens = UserTokens::model()->findAllByAttributes(array('uid'=>$user->uid));
-
-            $criteria = new CDbCriteria();
-            $criteria->compare('lid', $user->lid);
-            $criteria->limit = min(7500 - $user->user->follows, sizeof($tokens) * 2);
-            $criteria->offset = $user->pos;
-            $peopleToFollow = PeopleToFollow::model()->findAll($criteria);
+            $peopleToFollow = $this->getPeople($user, $tokens);
 
             if (sizeof($peopleToFollow) == 0) {
                 $this->setWaitStatus($user);
@@ -37,10 +32,26 @@ class FollowCommand extends CConsoleCommand {
                 $instagram->setAccessToken($tokens[(int)floor($i / 2)]->token);
                 $status = $instagram->modifyUserRelationship($peopleToFollow[$i]->fid, 'follow');
                 if ($status['meta']['code'] != 200) {
-                    Yii::log('FollowCommand: '.$status['meta']['error_message'].CVarDumper::dump($status));
+                    Yii::log('FollowCommand: '.$status['meta']['error_message'], CLogger::LEVEL_WARNING);
+                    CVarDumper::dump($status);
                 }
             }
         }
+    }
+
+    /**
+     * @param $user
+     * @param $tokens
+     * @return array
+     */
+    private function getPeople($user, $tokens)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->compare('lid', $user->lid);
+        $criteria->limit = min(7500 - $user->user->follows, sizeof($tokens) * 2);
+        $criteria->offset = $user->pos;
+        $peopleToFollow = PeopleToFollow::model()->findAll($criteria);
+        return $peopleToFollow;
     }
 
     /**
