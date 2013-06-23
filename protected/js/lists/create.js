@@ -1,5 +1,5 @@
 function refreshName(){
-    $.getJSON('../ajax/findUserByName', {name: $("#Lists_name").val()},
+    $.getJSON('index.php?r=ajax/findUserByName', {name: $("#Lists_name").val()},
         function (data){
             if (data.error) {
                 $("#Lists_lid").val("No such user");

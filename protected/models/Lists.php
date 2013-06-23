@@ -106,4 +106,16 @@ class Lists extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+    public static function getListsWithCount() {
+        $res = Yii::app()->cache->get("listsWithCount");
+        if ($res === false) {
+            $lists = Lists::model()->findAll();
+            $res = array();
+            foreach($lists as $list)
+                $res[$list->lid] = $list->name . " (".$list->count.' записей)';
+            Yii::app()->cache->set("listsWithCount", $res, 60 * 60 * 24, new CDbCacheDependency("SELECT count(*) FROM lists"));
+        }
+        return $res;
+    }
 }

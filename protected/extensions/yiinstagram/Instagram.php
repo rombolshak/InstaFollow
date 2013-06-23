@@ -93,9 +93,12 @@ class Instagram {
 
     /**
      * Holds the HTTP client instance
-     * @param Zend_Http_Client $httpClient
+     * @var CurlHttpClient $httpClient
      */
     protected $_httpClient = null;
+
+    protected $_proxy = null;
+    protected $_proxyAuth = null;
 
     /**
      * Constructor needs to receive the config as an array
@@ -121,6 +124,7 @@ class Instagram {
             $this->_httpClient->setUri($uri);
         }
         $this->_httpClient->setMethod($method);
+        $this->_httpClient->setProxy($this->_proxy, $this->_proxyAuth);
     }
 
     /**
@@ -205,6 +209,10 @@ class Instagram {
         $this->_accessToken = $accessToken;
     }
 
+    public function setProxy($proxy, $auth = null) {
+        $this->_proxy = $proxy;
+        $this->_proxyAuth = $auth;
+    }
     /**
      * Surf to Instagram credentials verification page.
      * If the user is already authenticated, redirects to

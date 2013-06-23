@@ -62,7 +62,8 @@ class KeysController extends Controller
 		{
 			$model->attributes=$_POST['Keys'];
 			if($model->save())
-				$this->redirect(array('view','id'=>$model->kid));
+				//$this->redirect(array('view','id'=>$model->kid));
+                $this->redirect(array('admin'));
 		}
 
 		$this->render('create',array(
@@ -113,10 +114,11 @@ class KeysController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Keys');
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
-		));
+//		$dataProvider=new CActiveDataProvider('Keys');
+//		$this->render('index',array(
+//			'dataProvider'=>$dataProvider,
+//		));
+        $this->redirect(array('admin'));
 	}
 
 	/**

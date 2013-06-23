@@ -31,7 +31,7 @@ Yii::app()->clientScript->registerScript('grid-update', '$(document).ready(funct
         array(
             'header'=>'',
             'type'=>'raw',
-            'value'=>'CHtml::image($data->picture, "", array("width"=>50))',
+            'value'=>'CHtml::image($data->picture, "", array("width"=>100))',
         ),
 		//'uid',
 		'name',
@@ -43,7 +43,12 @@ Yii::app()->clientScript->registerScript('grid-update', '$(document).ready(funct
         array(
             'header'=>'Список',
             'type'=>'raw',
-            'value'=>'CHtml::dropDownList("list", $data->manager->lid, CHtml::listData(Lists::model()->findAll(), "lid", "name"), array("prompt"=>"Выберите", "disabled"=> ($data->manager->status != "notStarted") && ($data->manager->status != "done")))',
+            'value'=>'CHtml::dropDownList("list", $data->manager->lid, Lists::getListsWithCount(), array("prompt"=>"Выберите", "disabled"=> ($data->manager->status != "notStarted") && ($data->manager->status != "done")))',
+        ),
+        array(
+            'header'=>'Ожидание (мин)',
+            'type'=>'raw',
+            'value'=>'CHtml::textField("timeInterval", $data->manager->timeInterval, array("class"=>"input-medium", "disabled"=> ($data->manager->status != "notStarted") && ($data->manager->status != "done")))'
         ),
 		'followers',
         'follows',
@@ -62,9 +67,11 @@ Yii::app()->clientScript->registerScript('grid-update', '$(document).ready(funct
                     'visible'=>'$data->manager->status == \'notStarted\' || $data->manager->status == \'done\'',
                     'url'=>'Yii::app()->createAbsoluteUrl("ajax/userStart", array("uid"=>$data->uid));',
                     'click' => " function(){
+                        var urlWithLidAndTime = $(this).attr('href') + '&lid=' + $($(this).parent().parent().children()[3]).children().val() + '&interval=' + $($(this).parent().parent().children()[4]).children().val();
+                        console.log(urlWithLidAndTime);
                         $.fn.yiiGridView.update('users-grid', {
                                         type:'POST',
-                                        url:$(this).attr('href') + '&lid=' + $($('.start').parent().parent().children()[3]).children().val(),
+                                        url: urlWithLidAndTime,
                                         success:function(data) {
                                               $.fn.yiiGridView.update('users-grid');
                                         }

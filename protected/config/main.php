@@ -22,20 +22,23 @@ return array(
 	'modules'=>array(
 		// uncomment the following to enable the Gii tool
 
-		'gii'=>array(
-			'class'=>'system.gii.GiiModule',
-			'password'=>'giipassword``',
-			// If removed, Gii defaults to localhost only. Edit carefully to taste.
-			'ipFilters'=>array('127.0.0.1','::1'),
-            'generatorPaths' => array(
-                'bootstrap.gii'
-            ),
-		),
+//		'gii'=>array(
+//			'class'=>'system.gii.GiiModule',
+//			'password'=>'giipassword``',
+//			// If removed, Gii defaults to localhost only. Edit carefully to taste.
+//			'ipFilters'=>array('127.0.0.1','::1'),
+//            'generatorPaths' => array(
+//                'bootstrap.gii'
+//            ),
+//		),
 
 	),
 
 	// application components
 	'components'=>array(
+        'cache'=>array(
+            'class' => 'system.caching.CFileCache',
+        ),
 		'user'=>array(
 			// enable cookie-based authentication
 			'allowAutoLogin'=>true,
@@ -91,18 +94,18 @@ return array(
 					'class'=>'CFileLogRoute',
 					'levels'=>'error, warning',
 				),
-                array(
+                //array(
                     // направляем результаты профайлинга в ProfileLogRoute (отображается
                     // внизу страницы)
-                    'class'=>'CProfileLogRoute',
-                    'levels'=>'profile',
-                    'enabled'=>true,
-                ),
+                    //'class'=>'CProfileLogRoute',
+                    //'levels'=>'profile',
+                    //'enabled'=>true,
+                //),
 				// uncomment the following to show log messages on web pages
 
-				array(
-					'class'=>'CWebLogRoute',
-				),
+				//array(
+					//'class'=>'CWebLogRoute',
+				//),
 
 			),
 		),
@@ -113,5 +116,6 @@ return array(
 	'params'=>array(
 		// this is used in contact page
 		'adminEmail'=>'rombolshak@russia.ru',
+        'proxyAuthString'=>'RUS41891:hSJvIdwTpj',
 	),
 );

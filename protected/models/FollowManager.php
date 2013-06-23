@@ -10,6 +10,7 @@
  * @property string $status
  * @property integer $paused
  * @property string $time
+ * @property int $timeInterval
  */
 class FollowManager extends CActiveRecord
 {
@@ -40,7 +41,7 @@ class FollowManager extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('uid', 'required'),
-			array('paused', 'numerical', 'integerOnly'=>true),
+			array('paused, timeInterval', 'numerical', 'integerOnly'=>true),
 			array('uid, lid, pos', 'length', 'max'=>11),
 			array('status', 'length', 'max'=>10),
 			array('time', 'safe'),
@@ -75,6 +76,7 @@ class FollowManager extends CActiveRecord
 			'pos' => 'Pos',
 			'status' => 'Статус',
 			'paused' => 'Paused',
+            'timeInterval'=>'Время ожидания',
 			'time' => 'Time',
 		);
 	}

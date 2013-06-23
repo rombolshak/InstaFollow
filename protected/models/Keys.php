@@ -7,6 +7,7 @@
  * @property string $kid
  * @property string $clientId
  * @property string $clientSecret
+ * @property string $proxy
  */
 class Keys extends CActiveRecord
 {
@@ -38,9 +39,10 @@ class Keys extends CActiveRecord
 		return array(
 			array('clientId, clientSecret', 'required'),
 			array('clientId, clientSecret', 'length', 'max'=>32),
+            array('proxy', 'length', 'max'=>20),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('kid, clientId, clientSecret', 'safe', 'on'=>'search'),
+			array('kid, clientId, clientSecret, proxy', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -52,6 +54,7 @@ class Keys extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+            'tokens'=>array(self::HAS_MANY, 'UserTokens', 'kid'),
 		);
 	}
 
@@ -64,8 +67,16 @@ class Keys extends CActiveRecord
 			'kid' => 'Kid',
 			'clientId' => 'Client ID',
 			'clientSecret' => 'Client Secret',
+            'proxy' => 'Proxy'
 		);
 	}
+
+    public function beforeDelete()
+    {
+        foreach($this->tokens as $token)
+            $token->delete();
+        return true;
+    }
 
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
@@ -81,9 +92,13 @@ class Keys extends CActiveRecord
 		$criteria->compare('kid',$this->kid,true);
 		$criteria->compare('clientId',$this->clientId,true);
 		$criteria->compare('clientSecret',$this->clientSecret,true);
+        $criteria->compare('proxy', $this->proxy, true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
+            'pagination'=>array(
+                'pageSize' => 40
+            ),
 		));
 	}
 }

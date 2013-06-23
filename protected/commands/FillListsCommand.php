@@ -64,7 +64,7 @@ class FillListsCommand extends CConsoleCommand {
                         Yii::log("The \"access_token\" provided is invalid.\n
                         Token deleted\n.
                         You should autorize user @".$tokens[$i]->user->name." again on key #".$tokens[$i]->kid, 'warning');
-                        $tokens[$i]->delete();
+                        //$tokens[$i]->delete();
                         break;
                     }
                     else {

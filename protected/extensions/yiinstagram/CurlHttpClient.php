@@ -34,6 +34,11 @@ class CurlHttpClient {
         $this->_setOptions($uri);
     }
 
+
+    public function __destruct() {
+        curl_close($this->handler);
+    }
+
     protected function _setOptions($uri) {
 
         //curl_setopt($this->handler, CURLOPT_FOLLOWLOCATION, true);
@@ -43,7 +48,7 @@ class CurlHttpClient {
     	curl_setopt($this->handler, CURLOPT_TIMEOUT, 10);
 	curl_setopt($this->handler, CURLOPT_RETURNTRANSFER, TRUE);
     	curl_setopt($this->handler, CURLOPT_SSL_VERIFYPEER, FALSE);
-	curl_setopt($this->handler, CURLOPT_FOLLOWLOCATION, FALSE);
+	curl_setopt($this->handler, CURLOPT_FOLLOWLOCATION, TRUE);
     	curl_setopt($this->handler, CURLOPT_URL, $uri);
     	
 	    // process the headers
@@ -58,8 +63,13 @@ class CurlHttpClient {
      * @param $uri
      */
     public function setUri($uri) {
-        $this->handler = curl_init();
+        //$this->handler = curl_init();
         $this->_setOptions($uri);
+    }
+
+    public function setProxy($proxy, $auth = null) {
+        curl_setopt($this->handler, CURLOPT_PROXY, $proxy);
+        curl_setopt($this->handler, CURLOPT_PROXYUSERPWD, $auth);
     }
 
     /**
@@ -106,7 +116,7 @@ class CurlHttpClient {
      */
     public function getResponse() {
         $response = curl_exec($this->handler);
-        curl_close($this->handler);		
+       // curl_close($this->handler);
         return $response;
     }
 

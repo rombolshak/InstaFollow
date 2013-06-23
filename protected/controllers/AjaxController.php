@@ -51,7 +51,7 @@ class AjaxController extends Controller
         else echo json_encode($searchedUser['data'][0]);
     }
 
-    public function actionUserStart($uid, $lid = 0) {
+    public function actionUserStart($uid, $lid = 0, $interval = 360) {
         if ($lid == 0) {echo 'Lid is null'; return;}
         if (Lists::model()->findByPk($lid) == null) {echo 'No such list '.$lid; return;}
         if (Users::model()->findByPk($uid) == null) {echo 'No such user '.$uid; return;}
@@ -60,9 +60,11 @@ class AjaxController extends Controller
         $manager = FollowManager::model()->findByPk($uid);
         //CVarDumper::dump($manager, 10, true);
         $manager->lid = $lid;
+        $manager->timeInterval = (int)$interval;
         $manager->pos = 0;
         $manager->status = 'follow';
-        $manager->save();
+        if (!$manager->save())
+            throw new CHttpException(500, $manager->errors);
     }
 
     public function actionUserPause($uid) {

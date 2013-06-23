@@ -31,11 +31,26 @@ class UserController extends Controller
 			array('allow',
 				'users'=>array('@'),
 			),
+            array('allow',
+                'actions'=>array('emptyKeys', 'add'),
+                'users'=>array('*')
+            ),
 			array('deny',  // deny all user
 				'users'=>array('*'),
 			),
 		);
 	}
+
+    public function actionEmptyKeys() {
+        $res = array();
+        $users = Yii::app()->db->createCommand("SELECT `name` FROM `".Users::model()->tableName().
+            "` WHERE `uid` NOT IN (SELECT `uid` FROM `".UserTokens::model()->tableName()."`)
+            OR
+            `uid` IN (SELECT `uid` FROM `".UserTokens::model()->tableName()."` GROUP BY `uid` HAVING count(uid) < ".Keys::model()->count().")")->queryAll();
+        foreach ($users as $user)
+            $res[] = $user['name'];
+        echo json_encode($res);
+    }
 
 	/**
 	 * Creates a new model.
@@ -96,7 +111,9 @@ class UserController extends Controller
      */
     private function processNextKey($token)
     {
-        $key = Keys::model()->findByPk((int)$token->kid + 1);
+        $criteria = new CDbCriteria();
+        $criteria->compare('kid', '>'.$token->kid);
+        $key = Keys::model()->find($criteria);
         $instagram = new Instagram(array(
             'client_id' => $key->clientId,
             'client_secret' => $key->clientSecret,

@@ -85,6 +85,8 @@ class Users extends CActiveRecord
     {
         if ($this->manager->paused == 1)
             return '<span class="label label-inverse">Приостановлено</span>';
+        if (sizeof($this->tokens) == 0)
+            return '<span class="label label-important">Нет ключей</span>';
         switch ($this->manager->status) {
             case 'notStarted': return '<span class="label label-important">Не запущено</span>';
             case 'follow': return '<span class="label label-info">Follow</span>';

@@ -27,6 +27,12 @@
 		<?php echo $form->error($model,'clientSecret'); ?>
 	</div>
 
+    <div class="row">
+        <?php echo $form->labelEx($model,'proxy'); ?>
+        <?php echo $form->textField($model,'proxy',array('size'=>20,'maxlength'=>20)); ?>
+        <?php echo $form->error($model,'proxy'); ?>
+    </div>
+
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
 	</div>

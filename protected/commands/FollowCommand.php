@@ -18,6 +18,11 @@ class FollowCommand extends CConsoleCommand {
             }
 
             $tokens = UserTokens::model()->findAllByAttributes(array('uid'=>$user->uid));
+            if (sizeof($tokens) == 0) {
+                //$this->setWaitStatus($user, 'noKeys');
+                continue;
+            }
+
             $peopleToFollow = $this->getPeople($user, $tokens);
 
             if (sizeof($peopleToFollow) == 0) {
@@ -29,12 +34,20 @@ class FollowCommand extends CConsoleCommand {
             $user->save();
 
             for ($i = 0; $i < sizeof($peopleToFollow); ++$i) {
-                $instagram->setAccessToken($tokens[(int)floor($i / 2)]->token);
-                $status = $instagram->modifyUserRelationship($peopleToFollow[$i]->fid, 'follow');
-                if ($status['meta']['code'] != 200) {
-                    Yii::log('FollowCommand: '.$status['meta']['error_message'], CLogger::LEVEL_WARNING);
-                    CVarDumper::dump($status);
+                try {
+                    $instagram->setAccessToken($tokens[(int)floor($i / 2)]->token);
+                    $instagram->setProxy($tokens[(int)floor($i / 2)]->key->proxy, Yii::app()->params['proxyAuthString']);
+                    $status = $instagram->modifyUserRelationship($peopleToFollow[$i]->fid, 'follow');
+                    if ($status['meta']['code'] != 200) {
+                        Yii::log('FollowCommand: '.$status['meta']['error_message'].'. Token = '.($tokens[(int)floor($i / 2)]->token), CLogger::LEVEL_WARNING);
+                        if ($status['meta']['error_message'] == 'The "access_token" provided is invalid.') {
+                            $tokens[(int)floor($i / 2)]->delete();
+                            Yii::log("Token was deleted", CLogger::LEVEL_INFO);
+                        }
+                        CVarDumper::dump($status);
+                    }
                 }
+                catch (Exception $ex) {continue;}
             }
         }
     }
@@ -57,10 +70,10 @@ class FollowCommand extends CConsoleCommand {
     /**
      * @param FollowManager $user
      */
-    private function setWaitStatus($user)
+    private function setWaitStatus($user, $status='wait')
     {
-        $user->status = 'wait';
-        $user->time = new CDbExpression('ADDDATE(NOW(), INTERVAL 1 DAY)');
+        $user->status = $status;
+        $user->time = new CDbExpression('ADDDATE(NOW(), INTERVAL '.$user->timeInterval.' MINUTE)');
         $user->save();
     }
 }

@@ -8,46 +8,31 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List Keys', 'url'=>array('index')),
 	array('label'=>'Create Keys', 'url'=>array('create')),
 );
 
-Yii::app()->clientScript->registerScript('search', "
-$('.search-button').click(function(){
-	$('.search-form').toggle();
-	return false;
-});
-$('.search-form form').submit(function(){
-	$('#keys-grid').yiiGridView('update', {
-		data: $(this).serialize()
-	});
-	return false;
-});
-");
 ?>
 
-<h1>Manage Keys</h1>
+<h1>Ключи</h1>
 
-<p>
-You may optionally enter a comparison operator (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
-or <b>=</b>) at the beginning of each of your search values to specify how the comparison should be done.
-</p>
-
-<?php echo CHtml::link('Advanced Search','#',array('class'=>'search-button')); ?>
-<div class="search-form" style="display:none">
-<?php $this->renderPartial('_search',array(
-	'model'=>$model,
-)); ?>
-</div><!-- search-form -->
-
-<?php $this->widget('zii.widgets.grid.CGridView', array(
+<?php $this->widget('bootstrap.widgets.TbGridView', array(
 	'id'=>'keys-grid',
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
 	'columns'=>array(
-		'kid',
-		'clientId',
-		'clientSecret',
+		array(
+            'name' => 'kid',
+            'htmlOptions'=>array('width'=>20),
+        ),
+		array(
+            'name'=>'clientId',
+            'htmlOptions'=>array('width'=>250),
+        ),
+		//'clientSecret',
+        array(
+            'name'=>'proxy',
+            'htmlOptions'=>array('width'=>150),
+        ),
 		array(
 			'class'=>'CButtonColumn',
 		),
